@@ -19,7 +19,7 @@ namespace innfact_B.Service
 
         public IEnumerable<OutCartVM> GetCart(Guid accountID)
         {
-            var result = from c in db.Carts
+            var result = from c in db.Carts.Where(x=>x.AccountId == accountID)
                          join p in db.Products
                          on c.ProductId equals p.ProductId
                          select new OutCartVM
