@@ -6,6 +6,7 @@ using innfact_B.Models;
 using innfact_B.Service;
 using innfact_B.ViewModels.In;
 using innfact_B.ViewModels.Out;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,8 @@ namespace innfact_B.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
+
     public class OrderController : ControllerBase
     {
         private OrderService orderService;
@@ -27,7 +30,7 @@ namespace innfact_B.Controllers
         }
         public IEnumerable<OutOrderVM> GetOrders(Guid accountID)
         {
-            return orderService.GetOrders(accountID);
+            return orderService.GetOrders(accountID).OrderByDescending(x=>x.OrderDate);
         }
             
     }

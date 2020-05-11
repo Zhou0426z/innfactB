@@ -7,6 +7,9 @@ using innfact_B.ViewModels.In;
 using innfact.Helper;
 using innfact_B.ViewModels.Out;
 using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Configuration;
+using innfact_B.Helper;
 
 namespace innfact_B.Service
 {
@@ -42,7 +45,7 @@ namespace innfact_B.Service
             result.AccountID = value.AccountId;
             return result;
         }
-        public OutAccountVM Login(InAccountVM account)
+        public OutAccountVM Login(InAccountVM account,JwtHelper jwt)
         {
             var result = new OutAccountVM();
             var value = db.Accounts.Where(x => x.LoginBy == account.LoginBy)
@@ -60,7 +63,7 @@ namespace innfact_B.Service
                 result.StatusCode = StatusCodes.Status500InternalServerError;
             }
 
-
+            result.Token = jwt.GenerateToken(account.UserName);
             return result;
             
         }

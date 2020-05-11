@@ -18,5 +18,7 @@ namespace innfact_B.ViewModels.In
 
         public string Gender { get; set; }
         public string Subscribe { get; set; }
+
+        public string Token { get; set; }
     }
 }

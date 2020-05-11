@@ -8,31 +8,40 @@ using innfact_B.Models;
 using innfact_B.Service;
 using innfact_B.ViewModels.In;
 using innfact_B.ViewModels.Out;
+using Microsoft.AspNetCore.Authorization;
+using innfact_B.Helper;
+using Microsoft.AspNetCore.Cors;
+
 namespace innfact.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private AccountService accountService;
-        public AccountController(InnfactContext db)
+        private JwtHelper jwtHelper;
+        public AccountController(InnfactContext db,JwtHelper _jwtHelper)
         {
             accountService = new AccountService(db);
+            jwtHelper = _jwtHelper;
         }
-        [HttpPost]
-        public OutAccountVM SignUp(InAccountVM inAccountVM)
+        [AllowAnonymous]
+       public OutAccountVM SignUp(InAccountVM inAccountVM)
         {
            return accountService.SignUp(inAccountVM);
         }
-        [HttpPost]
+        [AllowAnonymous]
+
         public OutAccountVM Login(InAccountVM inAccountVM)
         {
-           return accountService.Login(inAccountVM);
+            return accountService.Login(inAccountVM,jwtHelper);
         }
         public bool UpdatePassword(InPasswordVM inPasswordVM)
         {
            return accountService.UpdatePassword(inPasswordVM);
         }
+
         public OutAccountVM GetAccount(Guid accountID)
         {
             return accountService.GetAccount(accountID);
