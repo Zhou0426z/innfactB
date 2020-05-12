@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using innfact_B.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,17 @@ namespace innfact_B.Helper
             var serializeToken = tokenHandler.WriteToken(securityToken);
 
             return serializeToken;
+        }
+        public Line DecodingJWT(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var result = new Line();
+            var jwtPayload = handler.ReadJwtToken(token).Payload;
+            result.UserID = jwtPayload.Where(x => x.Key == "sub").FirstOrDefault().Value.ToString();
+            result.Email = jwtPayload.Where(x => x.Key == "email").FirstOrDefault().Value.ToString();
+            result.Name = jwtPayload.Where(x => x.Key == "name").FirstOrDefault().Value.ToString();
+            return result;
+            
         }
     }
 }

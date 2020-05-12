@@ -54,7 +54,7 @@ namespace innfact_B
             {
                 options.AddPolicy(name: "CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("https://localhost:4200")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();

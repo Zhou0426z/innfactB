@@ -15,7 +15,7 @@ namespace innfact_B.Models
 
         public Guid AccountId { get; set; }
         public Guid RoleId { get; set; }
-        public string Account { get; set; }
+        public string LineID { get; set; }
         public string Password { get; set; }
         public string UserName { get; set; }
         public string Phone { get; set; }

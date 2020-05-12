@@ -32,10 +32,22 @@ namespace innfact.Controllers
            return accountService.SignUp(inAccountVM);
         }
         [AllowAnonymous]
+        public OutAccountVM LineSignUp(string token)
+        {
+            return accountService.LineSignUp(token,jwtHelper);
+        }
+
+        [AllowAnonymous]
 
         public OutAccountVM Login(InAccountVM inAccountVM)
         {
             return accountService.Login(inAccountVM,jwtHelper);
+        }
+        [AllowAnonymous]
+
+        public OutAccountVM LineLogin(string token)
+        {
+            return accountService.LineLogin(token, jwtHelper);
         }
         public bool UpdatePassword(InPasswordVM inPasswordVM)
         {

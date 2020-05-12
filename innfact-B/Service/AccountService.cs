@@ -20,6 +20,36 @@ namespace innfact_B.Service
         {
             db = _db;
         }
+        public OutAccountVM LineSignUp(string token, JwtHelper jwt)
+        {
+            var lineData = jwt.DecodingJWT(token);
+            var result = new OutAccountVM();
+
+            var hasBeenSignUp = db.Accounts.SingleOrDefault(x => x.LineID == lineData.UserID && x.LoginBy == "Line");
+            if (hasBeenSignUp != null)
+            {
+                result.StatusCode = StatusCodes.Status500InternalServerError;
+                return result;
+            }
+            var value = new Accounts()
+            {
+                AccountId = Guid.NewGuid(),
+                LineID = lineData.UserID,
+                Email = lineData.Email,
+                LoginBy = "Line",
+                Password = null,
+                RoleId = db.Roles.FirstOrDefault(x => x.RoleName == "一般使用者").RoleId,
+                UserName = lineData.Name,
+                Subscribe = "unsubscribe"
+            };
+            db.Accounts.Add(value);
+            db.SaveChanges();
+            result.StatusCode = StatusCodes.Status200OK;
+            result.AccountID = value.AccountId;
+            return result;
+
+
+        }
         public OutAccountVM SignUp(InAccountVM account)
         {
             var hasBeenSignUp = db.Accounts.SingleOrDefault(x => x.Email == account.Email && x.LoginBy == account.LoginBy);
@@ -35,15 +65,39 @@ namespace innfact_B.Service
                 BirthDay = account.BirthDay,
                 Email = account.Email,
                 LoginBy = account.LoginBy,
-                Password = AccountHelper.EncodePassword(account.Password) ?? "",
+                Password = AccountHelper.EncodePassword(account.Password) ?? null,
                 RoleId = db.Roles.FirstOrDefault(x => x.RoleName == "一般使用者").RoleId,
-                UserName = account.UserName
+                UserName = account.UserName,
+                Subscribe = "unsubscribe"
             };
             db.Accounts.Add(value);
             db.SaveChanges();
             result.StatusCode = StatusCodes.Status200OK;
             result.AccountID = value.AccountId;
             return result;
+        }
+        public OutAccountVM LineLogin(string token, JwtHelper jwt)
+        {
+            var result = new OutAccountVM();
+            var lineData = jwt.DecodingJWT(token);
+            var value = db.Accounts.Where(x => x.LoginBy == "Line")
+                                   .SingleOrDefault(x => x.LineID == lineData.UserID);
+            if (value != null)
+            {
+                result.StatusCode = StatusCodes.Status200OK;
+                result.AccountID = value.AccountId;
+                result.Email = value.Email;
+                result.Name = value.UserName;
+
+            }
+            else
+            {
+                result.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+
+            result.Token = jwt.GenerateToken(value.UserName);
+            return result;
+
         }
         public OutAccountVM Login(InAccountVM account,JwtHelper jwt)
         {

@@ -37,7 +37,7 @@ namespace innfact_B.Models
                     .HasColumnName("AccountID")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Account).HasMaxLength(50);
+                entity.Property(e => e.LineID).HasMaxLength(50);
                 entity.Property(e => e.Phone).HasMaxLength(50);
                 entity.Property(e => e.Gender).HasMaxLength(50);
                 entity.Property(e => e.Subscribe).HasMaxLength(50);
